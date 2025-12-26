@@ -61,6 +61,33 @@ class MemoryManager:
         
         return victim_frame
     
+    def find_victim_lfu(self):
+        min_frequency = float('inf')
+        victim_frame = -1
+        oldest_time = float('inf')
+        
+        for key, value in self.page_table.items():
+            # Find page with minimum frequency
+            # If tie, use the one allocated earliest (oldest)
+            if value['frequency'] < min_frequency or \
+               (value['frequency'] == min_frequency and value['alloc_time'] < oldest_time):
+                min_frequency = value['frequency']
+                oldest_time = value['alloc_time']
+                victim_frame = value['frame_num']
+        
+        return victim_frame
+    
+    def find_victim_mru(self):
+        newest_time = -1
+        victim_frame = -1
+        
+        for key, value in self.page_table.items():
+            if value['last_used'] > newest_time:
+                newest_time = value['last_used']
+                victim_frame = value['frame_num']
+        
+        return victim_frame
+    
     def allocate_page(self, pid, page_num, algorithm='fifo'):
         if pid not in self.processes:
             return {'success': False, 'error': 'Process not found'}
@@ -71,6 +98,7 @@ class MemoryManager:
         if key in self.page_table and self.page_table[key]['frame_num'] is not None:
             self.stats['page_hits'] += 1
             self.page_table[key]['last_used'] = time.time()
+            self.page_table[key]['frequency'] += 1
             self.add_log(f"Page hit: P{pid} page {page_num}")
             return {'success': True, 'hit': True}
         
@@ -82,8 +110,12 @@ class MemoryManager:
         if frame_num == -1:
             if algorithm == 'fifo':
                 frame_num = self.find_victim_fifo()
-            else:  # LRU
+            elif algorithm == 'lru':
                 frame_num = self.find_victim_lru()
+            elif algorithm == 'lfu':
+                frame_num = self.find_victim_lfu()
+            elif algorithm == 'mru':
+                frame_num = self.find_victim_mru()
             
             if frame_num == -1:
                 return {'success': False, 'error': 'No frames available'}
@@ -119,7 +151,8 @@ class MemoryManager:
         self.page_table[key] = {
             'frame_num': frame_num,
             'alloc_time': current_time,
-            'last_used': current_time
+            'last_used': current_time,
+            'frequency': 1
         }
         
         if algorithm == 'fifo':
