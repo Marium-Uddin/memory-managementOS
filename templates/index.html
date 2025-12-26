@@ -351,6 +351,48 @@
             color: #dbeafe;
         }
 
+        .algorithm-info {
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 30px;
+        }
+
+        .algorithm-info h3 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            color: #c4b5fd;
+        }
+
+        .algorithm-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .algorithm-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 15px;
+        }
+
+        .algorithm-card h4 {
+            color: #e9d5ff;
+            margin-bottom: 8px;
+            font-size: 15px;
+        }
+
+        .algorithm-card p {
+            color: #d8b4fe;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
         @media (max-width: 1024px) {
             .main-content {
                 grid-template-columns: 1fr;
@@ -413,6 +455,8 @@
                 <select id="algorithmSelect">
                     <option value="fifo">FIFO (First In First Out)</option>
                     <option value="lru">LRU (Least Recently Used)</option>
+                    <option value="lfu">LFU (Least Frequently Used)</option>
+                    <option value="mru">MRU (Most Recently Used)</option>
                 </select>
             </div>
             <div class="setting-card">
@@ -477,6 +521,35 @@
             </div>
         </div>
 
+        <div class="algorithm-info">
+            <h3>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                    <path d="M2 17l10 5 10-5"></path>
+                    <path d="M2 12l10 5 10-5"></path>
+                </svg>
+                Page Replacement Algorithms
+            </h3>
+            <div class="algorithm-grid">
+                <div class="algorithm-card">
+                    <h4>FIFO</h4>
+                    <p>Replaces the oldest page in memory. Simple but may evict frequently used pages.</p>
+                </div>
+                <div class="algorithm-card">
+                    <h4>LRU</h4>
+                    <p>Replaces the page that hasn't been used for the longest time. Good performance but higher overhead.</p>
+                </div>
+                <div class="algorithm-card">
+                    <h4>LFU</h4>
+                    <p>Replaces the page with the lowest access frequency. Good for pages with consistent access patterns.</p>
+                </div>
+                <div class="algorithm-card">
+                    <h4>MRU</h4>
+                    <p>Replaces the most recently used page. Useful for specific access patterns like sequential scans.</p>
+                </div>
+            </div>
+        </div>
+
         <div class="info-box">
             <h3>
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -490,7 +563,7 @@
                 <li><strong>Create Process:</strong> Add new processes with random page requirements (2-4 pages)</li>
                 <li><strong>Simulate Access:</strong> Randomly access a page from an existing process</li>
                 <li><strong>Start/Pause:</strong> Run automatic simulation with random operations</li>
-                <li><strong>Page Replacement:</strong> Choose between FIFO or LRU algorithms when memory is full</li>
+                <li><strong>Page Replacement:</strong> Choose between FIFO, LRU, LFU, or MRU algorithms when memory is full</li>
                 <li><strong>Terminate:</strong> Click terminate on any process to free its memory</li>
             </ul>
         </div>
